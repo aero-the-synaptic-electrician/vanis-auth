@@ -1,4 +1,3 @@
-
 /**
  * @note 
  * The 'authentication' packet uses eight random values, 
@@ -16,51 +15,53 @@ const constants = [
 
 class XorKey {
     /** @param {Buffer | Array<Number>} data Key to be encoded. */
-	constructor(data) {
-		this.data = data;
-	}
+    constructor(data) {
+        this.data = data;
+    }
 
-	/**
-	 * Writes an encoded version of the given index to the output.
-	 * @param {Array<Number>} output
-	 * @param {Number} index
-	 */
-	writeIndex(output, index) {
-		const value = this.data[index],
-			mask = value + 4 & 7;
+    /**
+     * Writes an encoded version of the given index to the output.
+     * @param {Array<Number>} output
+     * @param {Number} index
+     */
+    writeIndex(output, index) {
+        const value = this.data[index],
+            mask = value + 4 & 7;
 
         const temp = ((value << mask) | (value >>> (8 - mask))) & 0xff;
 
-        if (index > 0) { 
+        if(index > 0) {
             const key = output[index - 1] ^ constants[index];
 
             output.push(temp ^ key);
         } else {
             output.push(constants[0] ^ temp);
         }
-	}
+    }
 
     /**
      * Constructs an encoded version of the current key.
      * @returns {Array<Number>}
      */
-	build() {
-		const result = [];
-		
-		for (let i = 0; i < 8; i++)
-			this.writeIndex(result, i);
+    build() {
+        const result = [];
 
-		const seed = Math.floor((Math.pow(2, 32) - 1) * Math.random());
-	
-		result.push((result[0] ^ (seed >>> 24)) & 0xff);
-		result.push((result[1] ^ (seed >>> 16)) & 0xff);
-		result.push((result[2] ^ (seed >>> 8)) & 0xff);
-		
-		result.push((seed ^ result[3]) & 0xff);
-		result.push(result[0]);
+        for(let i = 0; i < 8; i++)
+            this.writeIndex(result, i);
 
-		return result;
-	}
+        const seed = Math.floor((Math.pow(2, 32) - 1) * Math.random());
+
+        result.push((result[0] ^ (seed >>> 24)) & 0xff);
+        result.push((result[1] ^ (seed >>> 16)) & 0xff);
+        result.push((result[2] ^ (seed >>> 8)) & 0xff);
+
+        result.push((seed ^ result[3]) & 0xff);
+        result.push(result[0]);
+
+        return result;
+    }
 }
 
-export { XorKey };
+export {
+    XorKey
+};
