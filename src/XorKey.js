@@ -13,9 +13,10 @@ const constants = [
 	0x41, 0x1b, 0x9, 0x80
 ];
 
-class XorKey {
+export class XorKey {
 	/** @param {Buffer | Array<Number>} data Key to be encoded. */
 	constructor(data) {
+		/** @private */
 		this.data = data;
 	}
 
@@ -25,25 +26,22 @@ class XorKey {
 	 * @param {Number} index
 	 */
 	writeIndex(output, index) {
-		const value = this.data[index],
-			mask = value + 4 & 7;
-
-		const temp = ((value << mask) | (value >>> (8 - mask))) & 0xff;
+		const value = this.data[index];
+		
+		const mask = value + 4 & 7,
+		      temp = ((value << mask) | (value >>/*>*/ (8 - mask))) & 0xff;
 
 		if (index > 0) {
 			const key = output[index - 1] ^ constants[index];
-
 			output.push(temp ^ key);
 		} else {
 			output.push(constants[0] ^ temp);
 		}
 	}
 
-	/**
-	 * Constructs an encoded version of the current key.
-	 * @returns {Array<Number>}
-	 */
+	/** Constructs an encoded version of the current key. */
 	build() {
+		/** @type {Array<Number>} */
 		const result = [];
 
 		for (let i = 0; i < 8; i++)
@@ -60,6 +58,4 @@ class XorKey {
 
 		return result;
 	}
-}
-
-export { XorKey };
+};
