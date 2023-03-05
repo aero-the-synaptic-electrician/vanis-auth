@@ -8,9 +8,9 @@
  */
 
 /** Array of numbers to be used as constant keys. */
-const constants = [
-	0x37, 0x3, 0xaa, 0x20,
-	0x41, 0x1b, 0x9, 0x80
+const constants = new [	
+	5, 0x68, 0xfd, 0x3e,
+	0xaf, 0x74, 0xee, 0x29
 ];
 
 export class XorKey {
@@ -36,16 +36,16 @@ export class XorKey {
 	 */
 	writeIndex(output, index) {
 		const value = this.data[index],
-			mask = value + 4 & 7;
+			mask = (value + 4) & 7;
 
 		const temp = ((value << mask) | (value >>> (8 - mask))) & 0xff;
 
 		if (index > 0) {
-			const key = output[index - 1] ^ constants[index];
+			const key = output[index - 1] ^ constants.at(index);
 
 			output.push(temp ^ key);
 		} else {
-			output.push(constants[0] ^ temp);
+			output.push(constants.at(0) ^ temp);
 		}
 	}
 
@@ -65,7 +65,7 @@ export class XorKey {
 		result.push((result[1] ^ (seed >>> 16)) & 0xff);
 		result.push((result[2] ^ (seed >>> 8)) & 0xff);
 		result.push((seed ^ result[3]) & 0xff);
-
+		
 		result.push(result[0]);
 
 		return result;
