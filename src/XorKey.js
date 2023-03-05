@@ -29,7 +29,7 @@ export class XorKey {
 	}
 
 	/**
-	 * Writes an encoded version of the given index to the output
+	 * Writes an encoded version of the data at the given index to the output
 	 * @param {Array<number>} output
 	 * @param {number} index
 	 * @private
@@ -50,7 +50,7 @@ export class XorKey {
 	}
 
 	/**
-	 * Constructs an encoded version of the current key
+	 * Constructs an encoded version of the given data
 	 * @returns {Array<number>}
 	 */
 	build() {
