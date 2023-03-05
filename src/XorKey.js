@@ -8,7 +8,7 @@
  */
 
 /** Array of numbers to be used as constant keys. */
-const constants = new [	
+const constants = [	
 	5, 0x68, 0xfd, 0x3e,
 	0xaf, 0x74, 0xee, 0x29
 ];
