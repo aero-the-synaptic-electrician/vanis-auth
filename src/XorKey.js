@@ -20,6 +20,7 @@ export class XorKey {
 	 * const key = [1,2,3,4,5,6,7,8,9,11,12,13];
 	 * send(new XorKey(key).build());
 	 * ```
+	 *
 	 * @param {Buffer | Array<number>} data Key value to be encoded
 	 * @returns {XorKey} The key encoder instance
 	 **/
@@ -32,21 +33,24 @@ export class XorKey {
 	 * Writes an encoded version of the data at the given index to the output
 	 * @param {Array<number>} output
 	 * @param {number} index
+	 *
 	 * @private
 	 */
 	writeIndex(output, index) {
 		const value = this.data[index];
 		const mask = (value + 5) & 7;
 		const p1 = ((value << mask) | (value >>> (8 - mask))) & 0xff;
-		const p2 = output[index > 0 ? index-1 : 0] ^ constants.at(index);
-		output.push((p1 ^ p2) ^ 0x3e);
+		const p2 = output[index > 0 ? index - 1 : 0] ^ constants.at(index);
+		output.push((p1^p2) ^ 0x3e);
 	}
 
 	/**
 	 * Constructs an encoded version of the given data
+	 *
+	 * @param {boolean} [invert] 
 	 * @returns {Array<number>}
 	 */
-	build() {
+	build(invert=false) {
 		/** @type {Array<number>} */
 		const result = [];
 
@@ -60,7 +64,7 @@ export class XorKey {
 		result.push((result[2] ^ (seed >>> 8)) & 0xff);
 		result.push((seed ^ result[3]) & 0xff);
 
-		result.push(result[0]);
+		result.push((result[0] ^ +invert) ^ 0x1f);
 
 		return result;
 	}
